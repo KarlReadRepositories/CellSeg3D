@@ -26,7 +26,7 @@ do_validation = False
 number_of_epochs = 50
 use_default_advanced_parameters = False
 
-batch_size =  4
+batch_size =  1
 learning_rate = 2e-5
 num_classes = 2
 weight_decay = 0.01
@@ -65,7 +65,7 @@ train_config = WNetTrainingWorkerConfig(
     max_epochs=number_of_epochs,
     learning_rate=2e-5,
     validation_interval=2,
-    batch_size=1,
+    batch_size=batch_size,
     num_workers=2,
     weights_info=WeightsInfo(),
     results_path_folder=str(results_path),
