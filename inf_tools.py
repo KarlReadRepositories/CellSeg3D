@@ -30,11 +30,7 @@ def inference_on(model, image_files):
     with torch.no_grad():
         for _k, val_data_file in enumerate(image_files):
             val_data = np.load(val_data_file)
-            val_data = torch.from_numpy(val_data).to(DEVICE)
-            val_inputs, val_labels = (
-                val_data["image"].to(DEVICE),
-                val_data["label"].to(DEVICE),
-            )
+            val_inputs = torch.from_numpy(val_data).to(DEVICE)
 
             # normalize val_inputs across channels
             for i in range(val_inputs.shape[0]):
