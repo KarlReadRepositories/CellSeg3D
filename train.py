@@ -28,7 +28,8 @@ for ax_idx in range(3):
             jstart = j * BLOCK_WIDTH
             for k in range(im.shape[2] // BLOCK_WIDTH):
                 kstart = k * BLOCK_WIDTH
-                np.save(f'{training_source}/slice_{istart}_{jstart}_{kstart}.npy', im)
+                sli = im[istart:istart + BLOCK_WIDTH, jstart:jstart + BLOCK_WIDTH, kstart:kstart + BLOCK_WIDTH]
+                np.save(f'{training_source}/slice_{i}_{j}_{k}.npy', sli)
 model_path = "./gdrive/MyDrive/ComputerScience/WesternResearch/data/WNET_TRAINING_RESULTS"
 do_validation = False
 number_of_epochs = 50
