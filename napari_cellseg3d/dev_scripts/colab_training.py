@@ -455,20 +455,26 @@ class WNetTrainingWorkerColab(TrainingWorkerBase):
 
                 for _i, batch in enumerate(self.dataloader):
                     # raise NotImplementedError("testing")
+                    print('test1', _i, batch)
                     image_batch = batch["image"].to(device)
+                    print('test2', image_batch)
                     # Normalize the image
                     for i in range(image_batch.shape[0]):
                         for j in range(image_batch.shape[1]):
+                            print('test3', image_batch[i, j])
                             image_batch[i, j] = self.normalize_function(
                                 image_batch[i, j]
                             )
 
                     # Forward pass
                     enc, dec = model(image_batch)
+                    print('test4')
                     # Compute the Ncuts loss
                     Ncuts = criterionE(enc, image_batch)
+                    print('test5')
 
                     epoch_ncuts_loss += Ncuts.item()
+                    print('test6')
                     if WANDB_INSTALLED:
                         wandb.log({"Train/Ncuts loss": Ncuts.item()})
 
@@ -480,6 +486,7 @@ class WNetTrainingWorkerColab(TrainingWorkerBase):
                             torch.sigmoid(dec),
                             utils.remap_image(image_batch, new_max=1),
                         )
+                    print('test7')
 
                     epoch_rec_loss += reconstruction_loss.item()
                     if WANDB_INSTALLED:
@@ -494,6 +501,7 @@ class WNetTrainingWorkerColab(TrainingWorkerBase):
                     alpha = self.config.n_cuts_weight
                     beta = self.config.rec_loss_weight
 
+                    print('test8')
                     loss = alpha * Ncuts + beta * reconstruction_loss
                     if provided_loss is not None:
                         loss = provided_loss
@@ -505,6 +513,7 @@ class WNetTrainingWorkerColab(TrainingWorkerBase):
                         )
 
                     loss.backward(loss)
+                    print('test9')
                     optimizer.step()
                     yield epoch_loss
 
@@ -513,6 +522,7 @@ class WNetTrainingWorkerColab(TrainingWorkerBase):
                 )
                 self.rec_losses.append(epoch_rec_loss / len(self.dataloader))
                 self.total_losses.append(epoch_loss / len(self.dataloader))
+                print('test10')
 
                 if WANDB_INSTALLED:
                     wandb.log({"Ncuts loss for epoch": self.ncuts_losses[-1]})
@@ -529,6 +539,7 @@ class WNetTrainingWorkerColab(TrainingWorkerBase):
                             ]["lr"]
                         }
                     )
+                print('test11')
 
                 self.log(f"Ncuts loss: {self.ncuts_losses[-1]:.5f}")
                 self.log(f"Reconstruction loss: {self.rec_losses[-1]:.5f}")
