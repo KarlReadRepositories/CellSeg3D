@@ -60,15 +60,6 @@ logger = utils.LOGGER
 VERBOSE_SCHEDULER = True
 print(f"PRETRAINED WEIGHT DIR LOCATION : {PRETRAINED_WEIGHTS_DIR}")
 
-# try:
-#     import wandb
-#
-#     WANDB_INSTALLED = True
-# except ImportError:
-#     logger.warning(
-#         "wandb not installed, wandb config will not be taken into account",
-#         stacklevel=1,
-#     )
 WANDB_INSTALLED = False
 
 class WNetTrainingWorkerColab(TrainingWorkerBase):

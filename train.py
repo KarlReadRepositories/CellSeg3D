@@ -14,15 +14,6 @@ from napari_cellseg3d.dev_scripts.colab_training import print_mem_usage
 import logging
 utils.LOGGER.setLevel(logging.DEBUG)
 
-print('MEMUSE1')
-if not torch.cuda.is_available():
-    print('You do not have GPU access.')
-    print('Did you change your runtime?')
-    print('If the runtime setting is correct then Google did not allocate a GPU for your session')
-    print('Expect slow performance. To access GPU try reconnecting later')
-else:
-    print('You have GPU access')
-print_mem_usage()
 training_source_2 = "./gdrive/MyDrive/ComputerScience/WesternResearch/data/slice_origin"
 training_source = "/content/slice"
 if os.path.exists(training_source):
@@ -45,10 +36,7 @@ do_validation = False
 number_of_epochs = 50
 use_default_advanced_parameters = False
 
-print('MEMUSE2')
-print_mem_usage()
-
-batch_size =  1
+batch_size = 4
 learning_rate = 2e-5
 num_classes = 2
 weight_decay = 0.01
@@ -81,8 +69,6 @@ def create_dataset(folder):
 
 WANDB_INSTALLED = False
 
-print('MEMUSE3')
-print_mem_usage()
 train_config = WNetTrainingWorkerConfig(
     device="cuda:0",
     max_epochs=number_of_epochs,
@@ -115,16 +101,12 @@ train_config = WNetTrainingWorkerConfig(
     n_cuts_weight=n_cuts_weight,
     rec_loss_weight=rec_loss_weight,
 )
-print('MEMUSE4')
-print_mem_usage()
 wandb_config = WandBConfig(
     mode="disabled" if not WANDB_INSTALLED else "online",
     save_model_artifact=False,
 )
-print('MEMUSE5')
-print_mem_usage()
 worker = c.get_colab_worker(worker_config=train_config, wandb_config=wandb_config)
-print('MEMUSE6')
-print_mem_usage()
 for epoch_loss in worker.train():
     continue
+
+
