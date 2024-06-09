@@ -335,6 +335,8 @@ class WNetTrainingWorkerColab(TrainingWorkerBase):
             ##############
             # disable metadata tracking in MONAI
             set_track_meta(False)
+            print('MEMUSE7')
+            print_mem_usage()
             ##############
             if WANDB_INSTALLED:
                 config_dict = self.config.__dict__
@@ -349,6 +351,9 @@ class WNetTrainingWorkerColab(TrainingWorkerBase):
 
             set_determinism(seed=self.config.deterministic_config.seed)
             torch.use_deterministic_algorithms(True, warn_only=True)
+
+            print('MEMUSE8')
+            print_mem_usage()
 
             device = self.config.device
 
@@ -374,6 +379,8 @@ class WNetTrainingWorkerColab(TrainingWorkerBase):
                 else provided_model
             )
             model.to(device)
+            print('MEMUSE9')
+            print_mem_usage()
 
             if self.config.use_clipping:
                 for p in model.parameters():
@@ -441,7 +448,8 @@ class WNetTrainingWorkerColab(TrainingWorkerBase):
                 spatial_sigma=self.config.spatial_sigma,
                 radius=self.config.radius,
             )
-
+            print('MEMUSE10')
+            print_mem_usage()
             if self.config.reconstruction_loss == "MSE":
                 criterionW = nn.MSELoss()
             elif self.config.reconstruction_loss == "BCE":
@@ -452,6 +460,8 @@ class WNetTrainingWorkerColab(TrainingWorkerBase):
                 )
 
             model.train()
+            print('MEMUSE11')
+            print_mem_usage()
 
             self.log("Ready")
             self.log("Training the model")
@@ -461,6 +471,8 @@ class WNetTrainingWorkerColab(TrainingWorkerBase):
             for epoch in range(self.config.max_epochs):
                 self.log(f"Epoch {epoch + 1} of {self.config.max_epochs} col1")
 
+                print('MEMUSE12')
+                print_mem_usage()
                 epoch_ncuts_loss = 0
                 epoch_rec_loss = 0
                 epoch_loss = 0
