@@ -105,8 +105,9 @@ wandb_config = WandBConfig(
     mode="disabled" if not WANDB_INSTALLED else "online",
     save_model_artifact=False,
 )
-worker = c.get_colab_worker(worker_config=train_config, wandb_config=wandb_config)
-for epoch_loss in worker.train():
-    continue
 
 
+def train_model():
+    worker = c.get_colab_worker(worker_config=train_config, wandb_config=wandb_config)
+    for epoch_loss in worker.train():
+        continue
