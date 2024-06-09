@@ -447,11 +447,12 @@ class WNetTrainingWorkerColab(TrainingWorkerBase):
 
             # Train the model
             for epoch in range(self.config.max_epochs):
-                self.log(f"Epoch {epoch + 1} of {self.config.max_epochs}")
+                self.log(f"Epoch {epoch + 1} of {self.config.max_epochs} col1")
 
                 epoch_ncuts_loss = 0
                 epoch_rec_loss = 0
                 epoch_loss = 0
+                print('test0')
 
                 for _i, batch in enumerate(self.dataloader):
                     # raise NotImplementedError("testing")
