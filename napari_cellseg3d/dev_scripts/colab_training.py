@@ -4,6 +4,7 @@ from pathlib import Path
 
 import torch
 import torch.nn as nn
+import subprocess
 
 # MONAI
 from monai.data import (
@@ -47,6 +48,10 @@ def print_mem_usage():
     r = torch.cuda.memory_reserved(0)
     a = torch.cuda.memory_allocated(0)
     f = r - a  # free inside reserved
+    command = ["nvidia-smi"]
+    result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    print(result.stdout)
+    print(result.stderr)
     print(f'total mem {t} reserved {r} alloc {a} free {f}')
 
 
@@ -258,10 +263,6 @@ class WNetTrainingWorkerColab(TrainingWorkerBase):
             num_workers=self.config.num_workers,
             # collate_fn=pad_list_data_collate,
         )
-        print('dataloader initialized')
-        for batch_data in self.dataloader:
-            print('loading batch')
-            print(batch_data["image"].shape)
 
         if self.config.eval_volume_dict is not None:
             eval_dataset = self.get_dataset_eval(self.config.eval_volume_dict)
@@ -483,12 +484,12 @@ class WNetTrainingWorkerColab(TrainingWorkerBase):
                     print('test1', _i)
                     print_mem_usage()
                     image_batch = batch["image"].to(device)
-                    print('test2', image_batch)
+                    print('test2')
                     print_mem_usage()
                     # Normalize the image
                     for i in range(image_batch.shape[0]):
                         for j in range(image_batch.shape[1]):
-                            print('test3', image_batch[i, j])
+                            print('test3')
                             print_mem_usage()
                             image_batch[i, j] = self.normalize_function(
                                 image_batch[i, j]

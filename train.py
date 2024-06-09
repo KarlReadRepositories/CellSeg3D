@@ -15,6 +15,13 @@ import logging
 utils.LOGGER.setLevel(logging.DEBUG)
 
 print('MEMUSE1')
+if not torch.cuda.is_available():
+    print('You do not have GPU access.')
+    print('Did you change your runtime?')
+    print('If the runtime setting is correct then Google did not allocate a GPU for your session')
+    print('Expect slow performance. To access GPU try reconnecting later')
+else:
+    print('You have GPU access')
 print_mem_usage()
 training_source_2 = "./gdrive/MyDrive/ComputerScience/WesternResearch/data/slice_origin"
 training_source = "/content/slice"
