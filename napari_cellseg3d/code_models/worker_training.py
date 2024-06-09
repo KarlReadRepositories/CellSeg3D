@@ -572,7 +572,7 @@ class WNetTrainingWorker(TrainingWorkerBase):
 
             # Train the model
             for epoch in range(self.config.max_epochs):
-                self.log(f"Epoch {epoch + 1} of {self.config.max_epochs} col 2")
+                self.log(f"Epoch {epoch + 1} of {self.config.max_epochs}")
 
                 epoch_ncuts_loss = 0
                 epoch_rec_loss = 0

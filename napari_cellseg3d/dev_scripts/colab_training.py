@@ -250,6 +250,10 @@ class WNetTrainingWorkerColab(TrainingWorkerBase):
             num_workers=self.config.num_workers,
             collate_fn=pad_list_data_collate,
         )
+        print('dataloader initialized')
+        for batch_data in self.dataloader:
+            print('loading batch')
+            print(batch_data["image"].shape)
 
         if self.config.eval_volume_dict is not None:
             eval_dataset = self.get_dataset_eval(self.config.eval_volume_dict)
