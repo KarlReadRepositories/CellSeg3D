@@ -42,7 +42,7 @@ from napari_cellseg3d.code_models.workers_utils import (
 
 logger = utils.LOGGER
 VERBOSE_SCHEDULER = True
-logger.debug(f"PRETRAINED WEIGHT DIR LOCATION : {PRETRAINED_WEIGHTS_DIR}")
+print(f"PRETRAINED WEIGHT DIR LOCATION : {PRETRAINED_WEIGHTS_DIR}")
 
 # try:
 #     import wandb
@@ -95,7 +95,7 @@ class WNetTrainingWorkerColab(TrainingWorkerBase):
 
     def log(self, text):
         """Log a message to the logger and to wandb if installed."""
-        logger.info(text)
+        print(text)
 
     def get_patch_dataset(self, train_transforms):
         """Creates a Dataset from the original data using the tifffile library.
@@ -232,15 +232,15 @@ class WNetTrainingWorkerColab(TrainingWorkerBase):
 
         print(self.config.sampling)
         if self.config.sampling:
-            logger.debug("Loading patch dataset")
+            print("Loading patch dataset")
             (self.data_shape, dataset) = self.get_patch_dataset(
                 train_transforms
             )
         else:
-            logger.debug("Loading volume dataset")
+            print("Loading volume dataset")
             (self.data_shape, dataset) = self.get_dataset(train_transforms)
 
-        logger.debug(f"Data shape : {self.data_shape}")
+        print(f"Data shape : {self.data_shape}")
         self.dataloader = DataLoader(
             dataset,
             batch_size=self.config.batch_size,
@@ -328,7 +328,7 @@ class WNetTrainingWorkerColab(TrainingWorkerBase):
             ##############
             if WANDB_INSTALLED:
                 config_dict = self.config.__dict__
-                logger.debug(f"wandb config : {config_dict}")
+                print(f"wandb config : {config_dict}")
                 wandb.init(
                     config=config_dict,
                     project="CellSeg3D (Colab)",
@@ -641,7 +641,7 @@ class WNetTrainingWorkerColab(TrainingWorkerBase):
                         val_inputs[i][j] = self.normalize_function(
                             val_inputs[i][j]
                         )
-                logger.debug(f"Val inputs shape: {val_inputs.shape}")
+                print(f"Val inputs shape: {val_inputs.shape}")
                 val_outputs = sliding_window_inference(
                     val_inputs,
                     roi_size=[64, 64, 64],
@@ -663,9 +663,9 @@ class WNetTrainingWorkerColab(TrainingWorkerBase):
                     progress=True,
                 )
                 val_outputs = AsDiscrete(threshold=0.5)(val_outputs)
-                logger.debug(f"Val outputs shape: {val_outputs.shape}")
-                logger.debug(f"Val labels shape: {val_labels.shape}")
-                logger.debug(
+                print(f"Val outputs shape: {val_outputs.shape}")
+                print(f"Val labels shape: {val_labels.shape}")
+                print(
                     f"Val decoder outputs shape: {val_decoder_outputs.shape}"
                 )
 
@@ -680,11 +680,11 @@ class WNetTrainingWorkerColab(TrainingWorkerBase):
                 #             y_true=val_labels[0],
                 #         )
                 #     )
-                # logger.debug(f"DICE COEFF: {dices}")
+                # print(f"DICE COEFF: {dices}")
                 # max_dice_channel = torch.argmax(
                 #     torch.Tensor(dices)
                 # )
-                # logger.debug(
+                # print(
                 #     f"MAX DICE CHANNEL: {max_dice_channel}"
                 # )
                 self.dice_metric(
@@ -755,10 +755,10 @@ def create_dataset_dict_no_labs(volume_directory):
     if len(images_filepaths) == 0:
         raise ValueError(f"Data folder {volume_directory} is empty")
 
-    logger.info("Images :")
+    print("Images :")
     for file in images_filepaths:
-        logger.info(Path(file).stem)
-    logger.info("*" * 10)
+        print(Path(file).stem)
+    print("*" * 10)
     return [{"image": str(image_name)} for image_name in images_filepaths]
 
 
@@ -782,13 +782,13 @@ def create_eval_dataset_dict(image_directory, label_directory):
     if not Path(labels_filepaths[0]).parent.exists():
         raise ValueError("Labels folder does not exist")
 
-    logger.info("Images :\n")
+    print("Images :\n")
     for file in images_filepaths:
-        logger.info(Path(file).name)
-    logger.info("*" * 10)
-    logger.info("Labels :\n")
+        print(Path(file).name)
+    print("*" * 10)
+    print("Labels :\n")
     for file in labels_filepaths:
-        logger.info(Path(file).name)
+        print(Path(file).name)
     return [
         {"image": image_name, "label": label_name}
         for image_name, label_name in zip(images_filepaths, labels_filepaths)
