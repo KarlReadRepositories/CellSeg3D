@@ -40,6 +40,16 @@ from napari_cellseg3d.code_models.workers_utils import (
     PRETRAINED_WEIGHTS_DIR,
 )
 
+
+def print_mem_usage():
+    torch.cuda.synchronize()
+    t = torch.cuda.get_device_properties(0).total_memory
+    r = torch.cuda.memory_reserved(0)
+    a = torch.cuda.memory_allocated(0)
+    f = r - a  # free inside reserved
+    print(f'total mem {t} reserved {r} alloc {a} free {f}')
+
+
 logger = utils.LOGGER
 VERBOSE_SCHEDULER = True
 print(f"PRETRAINED WEIGHT DIR LOCATION : {PRETRAINED_WEIGHTS_DIR}")
@@ -458,13 +468,16 @@ class WNetTrainingWorkerColab(TrainingWorkerBase):
 
                 for _i, batch in enumerate(self.dataloader):
                     # raise NotImplementedError("testing")
-                    print('test1', _i, batch)
+                    print('test1', _i)
+                    print_mem_usage()
                     image_batch = batch["image"].to(device)
                     print('test2', image_batch)
+                    print_mem_usage()
                     # Normalize the image
                     for i in range(image_batch.shape[0]):
                         for j in range(image_batch.shape[1]):
                             print('test3', image_batch[i, j])
+                            print_mem_usage()
                             image_batch[i, j] = self.normalize_function(
                                 image_batch[i, j]
                             )
