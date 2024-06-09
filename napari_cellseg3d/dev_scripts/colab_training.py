@@ -49,7 +49,8 @@ def print_mem_usage():
     a = torch.cuda.memory_allocated(0)
     f = r - a  # free inside reserved
     command = ["nvidia-smi"]
-    result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    result = subprocess.run(command, shell=True, capture_output=True, text=True)
+    # result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     print(result.stdout)
     print(result.stderr)
     print(f'total mem {t} reserved {r} alloc {a} free {f}')
