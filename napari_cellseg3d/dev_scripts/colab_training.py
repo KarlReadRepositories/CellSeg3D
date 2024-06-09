@@ -450,8 +450,6 @@ class WNetTrainingWorkerColab(TrainingWorkerBase):
                 spatial_sigma=self.config.spatial_sigma,
                 radius=self.config.radius,
             )
-            print('MEMUSE10')
-            print_mem_usage()
             if self.config.reconstruction_loss == "MSE":
                 criterionW = nn.MSELoss()
             elif self.config.reconstruction_loss == "BCE":
@@ -462,8 +460,6 @@ class WNetTrainingWorkerColab(TrainingWorkerBase):
                 )
 
             model.train()
-            print('MEMUSE11')
-            print_mem_usage()
 
             self.log("Ready")
             self.log("Training the model")
@@ -473,38 +469,24 @@ class WNetTrainingWorkerColab(TrainingWorkerBase):
             for epoch in range(self.config.max_epochs):
                 self.log(f"Epoch {epoch + 1} of {self.config.max_epochs} col1")
 
-                print('MEMUSE12')
-                print_mem_usage()
                 epoch_ncuts_loss = 0
                 epoch_rec_loss = 0
                 epoch_loss = 0
-                print('test0')
 
                 for _i, batch in enumerate(self.dataloader):
                     # raise NotImplementedError("testing")
-                    print('test1', _i)
-                    print_mem_usage()
                     image_batch = batch["image"].to(device)
-                    print('test2')
-                    print_mem_usage()
                     # Normalize the image
                     for i in range(image_batch.shape[0]):
                         for j in range(image_batch.shape[1]):
-                            print('test3')
-                            print_mem_usage()
                             image_batch[i, j] = self.normalize_function(
                                 image_batch[i, j]
                             )
 
                     # Forward pass
                     enc, dec = model(image_batch)
-                    print('test4')
-                    # Compute the Ncuts loss
                     Ncuts = criterionE(enc, image_batch)
-                    print('test5')
-
                     epoch_ncuts_loss += Ncuts.item()
-                    print('test6')
                     if WANDB_INSTALLED:
                         wandb.log({"Train/Ncuts loss": Ncuts.item()})
 
@@ -516,8 +498,6 @@ class WNetTrainingWorkerColab(TrainingWorkerBase):
                             torch.sigmoid(dec),
                             utils.remap_image(image_batch, new_max=1),
                         )
-                    print('test7')
-
                     epoch_rec_loss += reconstruction_loss.item()
                     if WANDB_INSTALLED:
                         wandb.log(
@@ -530,8 +510,6 @@ class WNetTrainingWorkerColab(TrainingWorkerBase):
                     optimizer.zero_grad()
                     alpha = self.config.n_cuts_weight
                     beta = self.config.rec_loss_weight
-
-                    print('test8')
                     loss = alpha * Ncuts + beta * reconstruction_loss
                     if provided_loss is not None:
                         loss = provided_loss
@@ -543,7 +521,6 @@ class WNetTrainingWorkerColab(TrainingWorkerBase):
                         )
 
                     loss.backward(loss)
-                    print('test9')
                     optimizer.step()
                     yield epoch_loss
 
@@ -552,7 +529,6 @@ class WNetTrainingWorkerColab(TrainingWorkerBase):
                 )
                 self.rec_losses.append(epoch_rec_loss / len(self.dataloader))
                 self.total_losses.append(epoch_loss / len(self.dataloader))
-                print('test10')
 
                 if WANDB_INSTALLED:
                     wandb.log({"Ncuts loss for epoch": self.ncuts_losses[-1]})
@@ -569,7 +545,6 @@ class WNetTrainingWorkerColab(TrainingWorkerBase):
                             ]["lr"]
                         }
                     )
-                print('test11')
 
                 self.log(f"Ncuts loss: {self.ncuts_losses[-1]:.5f}")
                 self.log(f"Reconstruction loss: {self.rec_losses[-1]:.5f}")
