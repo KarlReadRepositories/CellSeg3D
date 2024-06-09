@@ -1,5 +1,6 @@
-import subprocess
+import torch
 
-result = subprocess.run(["dir"], shell=True, capture_output=True, text=True)
+A = torch.zeros((1000, 1000, 2000), dtype=torch.float32) + 1.
 
-print(result.stdout)
+print(A.shape)
+print(A.sum())
