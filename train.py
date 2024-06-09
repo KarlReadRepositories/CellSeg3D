@@ -20,7 +20,15 @@ if os.path.exists(training_source):
 os.mkdir(training_source)
 im = np.load(f'{training_source_2}/slice.npy')[0]
 im = im / im.max()
-np.save(f'{training_source}/slice.npy', im)
+BLOCK_WIDTH = 128
+for ax_idx in range(3):
+    for i in range(im.shape[0] // BLOCK_WIDTH):
+        istart = i * BLOCK_WIDTH
+        for j in range(im.shape[1] // BLOCK_WIDTH):
+            jstart = j * BLOCK_WIDTH
+            for k in range(im.shape[2] // BLOCK_WIDTH):
+                kstart = k * BLOCK_WIDTH
+                np.save(f'{training_source}/slice_{istart}_{jstart}_{kstart}.npy', im)
 model_path = "./gdrive/MyDrive/ComputerScience/WesternResearch/data/WNET_TRAINING_RESULTS"
 do_validation = False
 number_of_epochs = 50
