@@ -233,6 +233,7 @@ class WNetTrainingWorkerColab(TrainingWorkerBase):
         else:
             train_transforms = EnsureTyped(keys=["image"])
 
+        print(self.config.sampling)
         if self.config.sampling:
             logger.debug("Loading patch dataset")
             (self.data_shape, dataset) = self.get_patch_dataset(
