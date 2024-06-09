@@ -248,7 +248,7 @@ class WNetTrainingWorkerColab(TrainingWorkerBase):
             batch_size=self.config.batch_size,
             shuffle=True,
             num_workers=self.config.num_workers,
-            collate_fn=pad_list_data_collate,
+            # collate_fn=pad_list_data_collate,
         )
         print('dataloader initialized')
         for batch_data in self.dataloader:
