@@ -28,8 +28,9 @@ def inference_on(model, image_files):
     :return:
     """
     with torch.no_grad():
+        model.eval()
         for _k, val_data_file in enumerate(image_files):
-            val_data = np.load(val_data_file)
+            val_data = np.load(val_data_file)[None, None, :]
             val_inputs = torch.from_numpy(val_data).to(DEVICE)
 
             # normalize val_inputs across channels
