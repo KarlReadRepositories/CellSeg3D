@@ -12,6 +12,7 @@ from monai.data import DataLoader, Dataset
 import cv2
 from napari_cellseg3d.dev_scripts.colab_training import print_mem_usage
 import logging
+
 utils.LOGGER.setLevel(logging.DEBUG)
 
 training_source_2 = "./gdrive/MyDrive/ComputerScience/WesternResearch/data/slice_origin"
@@ -19,18 +20,33 @@ training_source = "/content/slice"
 if os.path.exists(training_source):
     shutil.rmtree(training_source)
 os.mkdir(training_source)
+
+
+def preprocess_to_3d_tiles(infile, out_prefix, ch, tile_width, clamp_max, clamp_min=0):
+    """Preprocess a 4d slice (ch, z, y, x) file by selecting one of its channel and turn the volume into
+    3d tiles of a given size;
+    If the tile_width is None, then the slice is not tiled"""
+    im = np.load(infile)[ch]
+    clamp_range = clamp_max - clamp_min
+    im = np.clip((im - clamp_min) / clamp_range, 0, 1)
+    if tile_width is None:
+        np.save(f'{out_prefix}.npy', im)
+    else:
+        for i in range(im.shape[0] // tile_width):
+            istart = i * tile_width
+            for j in range(im.shape[1] // tile_width):
+                jstart = j * tile_width
+                for k in range(im.shape[2] // tile_width):
+                    kstart = k * tile_width
+                    sli = im[istart:istart + tile_width, jstart:jstart + tile_width, kstart:kstart + tile_width]
+                    np.save(f'{out_prefix}_{i}_{j}_{k}.npy', sli)
+
+
 im = np.load(f'{training_source_2}/slice.npy')[0]
-im = im / im.max()
-BLOCK_WIDTH = 32
-for ax_idx in range(3):
-    for i in range(im.shape[0] // BLOCK_WIDTH):
-        istart = i * BLOCK_WIDTH
-        for j in range(im.shape[1] // BLOCK_WIDTH):
-            jstart = j * BLOCK_WIDTH
-            for k in range(im.shape[2] // BLOCK_WIDTH):
-                kstart = k * BLOCK_WIDTH
-                sli = im[istart:istart + BLOCK_WIDTH, jstart:jstart + BLOCK_WIDTH, kstart:kstart + BLOCK_WIDTH]
-                np.save(f'{training_source}/slice_{i}_{j}_{k}.npy', sli)
+preprocess_to_3d_tiles(f'{training_source_2}/slice.npy',
+                       f'{training_source}/slice', 0, 32, 2000, 0)
+
+
 model_path = "./gdrive/MyDrive/ComputerScience/WesternResearch/data/WNET_TRAINING_RESULTS"
 do_validation = False
 number_of_epochs = 300
@@ -56,9 +72,10 @@ eval_image_folder = Path(src_pth)
 eval_label_folder = Path(src_pth)
 
 eval_dict = c.create_eval_dataset_dict(
-        eval_image_folder,
-        eval_label_folder,
-    ) if do_validation else None
+    eval_image_folder,
+    eval_label_folder,
+) if do_validation else None
+
 
 def create_dataset(folder):
     images_filepaths = utils.get_all_matching_files(folder, pattern={'.npy', })
@@ -66,6 +83,7 @@ def create_dataset(folder):
 
     data_dict = [{"image": str(image_name)} for image_name in images_filepaths]
     return data_dict
+
 
 WANDB_INSTALLED = False
 
