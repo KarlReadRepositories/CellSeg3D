@@ -21,7 +21,7 @@ if os.path.exists(training_source):
 os.mkdir(training_source)
 im = np.load(f'{training_source_2}/slice.npy')[0]
 im = im / im.max()
-BLOCK_WIDTH = 64
+BLOCK_WIDTH = 32
 for ax_idx in range(3):
     for i in range(im.shape[0] // BLOCK_WIDTH):
         istart = i * BLOCK_WIDTH
