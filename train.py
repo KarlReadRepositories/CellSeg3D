@@ -44,7 +44,6 @@ def preprocess_to_3d_tiles(infile, out_prefix, ch, tile_width, clamp_max, clamp_
 
 model_path = "./gdrive/MyDrive/ComputerScience/WesternResearch/data/WNET_TRAINING_RESULTS"
 do_validation = False
-number_of_epochs = 300
 use_default_advanced_parameters = False
 
 batch_size = 4
@@ -85,7 +84,7 @@ WANDB_INSTALLED = False
 train_config = None
 wandb_config = None
 
-def init_configs():
+def init_configs(number_of_epochs = 50):
     global train_config, wandb_config
     train_config = WNetTrainingWorkerConfig(
         device="cuda:0",
