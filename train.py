@@ -42,11 +42,6 @@ def preprocess_to_3d_tiles(infile, out_prefix, ch, tile_width, clamp_max, clamp_
                     np.save(f'{out_prefix}_{i}_{j}_{k}.npy', sli)
 
 
-im = np.load(f'{training_source_2}/slice.npy')[0]
-preprocess_to_3d_tiles(f'{training_source_2}/slice.npy',
-                       f'{training_source}/slice', 0, 32, 2000, 0)
-
-
 model_path = "./gdrive/MyDrive/ComputerScience/WesternResearch/data/WNET_TRAINING_RESULTS"
 do_validation = False
 number_of_epochs = 300
@@ -87,42 +82,47 @@ def create_dataset(folder):
 
 WANDB_INSTALLED = False
 
-train_config = WNetTrainingWorkerConfig(
-    device="cuda:0",
-    max_epochs=number_of_epochs,
-    learning_rate=2e-5,
-    validation_interval=2,
-    batch_size=batch_size,
-    num_workers=2,
-    weights_info=WeightsInfo(),
-    results_path_folder=str(results_path),
-    train_data_dict=create_dataset(train_data_folder),
-    eval_volume_dict=eval_dict,
-) if use_default_advanced_parameters else WNetTrainingWorkerConfig(
-    device="cuda:0",
-    max_epochs=number_of_epochs,
-    learning_rate=learning_rate,
-    validation_interval=validation_frequency,
-    batch_size=batch_size,
-    num_workers=2,
-    weights_info=WeightsInfo(),
-    results_path_folder=str(results_path),
-    train_data_dict=create_dataset(train_data_folder),
-    eval_volume_dict=eval_dict,
-    # advanced
-    num_classes=num_classes,
-    weight_decay=weight_decay,
-    intensity_sigma=intensity_sigma,
-    spatial_sigma=spatial_sigma,
-    radius=ncuts_radius,
-    reconstruction_loss=rec_loss,
-    n_cuts_weight=n_cuts_weight,
-    rec_loss_weight=rec_loss_weight,
-)
-wandb_config = WandBConfig(
-    mode="disabled" if not WANDB_INSTALLED else "online",
-    save_model_artifact=False,
-)
+train_config = None
+wandb_config = None
+
+def init_configs():
+    global train_config, wandb_config
+    train_config = WNetTrainingWorkerConfig(
+        device="cuda:0",
+        max_epochs=number_of_epochs,
+        learning_rate=2e-5,
+        validation_interval=2,
+        batch_size=batch_size,
+        num_workers=2,
+        weights_info=WeightsInfo(),
+        results_path_folder=str(results_path),
+        train_data_dict=create_dataset(train_data_folder),
+        eval_volume_dict=eval_dict,
+    ) if use_default_advanced_parameters else WNetTrainingWorkerConfig(
+        device="cuda:0",
+        max_epochs=number_of_epochs,
+        learning_rate=learning_rate,
+        validation_interval=validation_frequency,
+        batch_size=batch_size,
+        num_workers=2,
+        weights_info=WeightsInfo(),
+        results_path_folder=str(results_path),
+        train_data_dict=create_dataset(train_data_folder),
+        eval_volume_dict=eval_dict,
+        # advanced
+        num_classes=num_classes,
+        weight_decay=weight_decay,
+        intensity_sigma=intensity_sigma,
+        spatial_sigma=spatial_sigma,
+        radius=ncuts_radius,
+        reconstruction_loss=rec_loss,
+        n_cuts_weight=n_cuts_weight,
+        rec_loss_weight=rec_loss_weight,
+    )
+    wandb_config = WandBConfig(
+        mode="disabled" if not WANDB_INSTALLED else "online",
+        save_model_artifact=False,
+    )
 
 
 def train_model():
