@@ -33,7 +33,7 @@ for ax_idx in range(3):
                 np.save(f'{training_source}/slice_{i}_{j}_{k}.npy', sli)
 model_path = "./gdrive/MyDrive/ComputerScience/WesternResearch/data/WNET_TRAINING_RESULTS"
 do_validation = False
-number_of_epochs = 50
+number_of_epochs = 300
 use_default_advanced_parameters = False
 
 batch_size = 4
