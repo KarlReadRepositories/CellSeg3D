@@ -21,6 +21,23 @@ def create_model(train_config, weights):
     return model
 
 
+def normalize_inplace(
+    image,
+    im_max,
+    im_min,
+    new_max=100,
+    new_min=0,
+    batch_size=16384,
+):
+    """Modified from CellSeg3D/napari_cellseg3d/utils.py for low mem inference; in place normalize
+    Normalizes a numpy array or Tensor using the max and min value."""
+    im_view = image.view(-1)
+    for i in range(0, len(im_view), batch_size):
+        iend = i + batch_size
+        im_view[i:iend] = (im_view[i:iend] - im_min) / (im_max - im_min)
+        im_view[i:iend] = im_view[i:iend] * (new_max - new_min) + new_min
+
+
 def inference_on(model, image_files):
     """
     :param model:
@@ -36,9 +53,9 @@ def inference_on(model, image_files):
             # normalize val_inputs across channels
             for i in range(val_inputs.shape[0]):
                 for j in range(val_inputs.shape[1]):
-                    val_inputs[i][j] = remap_image(
-                        val_inputs[i][j]
-                    )
+                    im_max = val_inputs.max()
+                    im_min = val_inputs.min()
+                    normalize_inplace(val_inputs[i, j], im_max=im_max, im_min=im_min)
             print(f"Val inputs shape: {val_inputs.shape}")
             val_outputs = sliding_window_inference(
                 val_inputs,
@@ -50,15 +67,15 @@ def inference_on(model, image_files):
                 sigma_scale=0.01,
                 progress=True,
             )
-            val_decoder_outputs = sliding_window_inference(
-                val_outputs,
-                roi_size=[64, 64, 64],
-                sw_batch_size=1,
-                predictor=model.forward_decoder,
-                overlap=0.1,
-                mode="gaussian",
-                sigma_scale=0.01,
-                progress=True,
-            )
+            # val_decoder_outputs = sliding_window_inference(
+            #     val_outputs,
+            #     roi_size=[64, 64, 64],
+            #     sw_batch_size=1,
+            #     predictor=model.forward_decoder,
+            #     overlap=0.1,
+            #     mode="gaussian",
+            #     sigma_scale=0.01,
+            #     progress=True,
+            # )
             val_outputs = val_outputs
             yield val_outputs
