@@ -21,7 +21,7 @@ if os.path.exists(training_source):
 os.mkdir(training_source)
 im = np.load(f'{training_source_2}/slice.npy')[0]
 im = im / im.max()
-BLOCK_WIDTH = 32
+BLOCK_WIDTH = 64
 for ax_idx in range(3):
     for i in range(im.shape[0] // BLOCK_WIDTH):
         istart = i * BLOCK_WIDTH
@@ -38,7 +38,7 @@ use_default_advanced_parameters = False
 
 batch_size = 4
 learning_rate = 2e-5
-num_classes = 2
+num_classes = 10
 weight_decay = 0.01
 validation_frequency = 2
 intensity_sigma = 1.0

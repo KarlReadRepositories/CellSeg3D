@@ -60,5 +60,5 @@ def inference_on(model, image_files):
                 sigma_scale=0.01,
                 progress=True,
             )
-            val_outputs = AsDiscrete(threshold=0.5)(val_outputs)
+            val_outputs = val_outputs
             yield val_outputs
