@@ -1,5 +1,5 @@
 import torch
-from .train import FIXED_NORMALIZATION
+FIXED_NORMALIZATION = True
 
 
 def normalize_inplace(

@@ -56,7 +56,6 @@ ncuts_radius = 2
 rec_loss = "MSE"
 n_cuts_weight = 0.5
 rec_loss_weight = 0.005
-FIXED_NORMALIZATION = True
 
 src_pth = training_source
 train_data_folder = Path(src_pth)
