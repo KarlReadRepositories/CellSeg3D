@@ -1,4 +1,5 @@
 import torch
+from .train import FIXED_NORMALIZATION
 
 
 def normalize_inplace(
@@ -17,4 +18,11 @@ def normalize_inplace(
         im_view[i:iend] = (im_view[i:iend] - im_min) / (im_max - im_min)
         im_view[i:iend] = im_view[i:iend] * (new_max - new_min) + new_min
 
+
+def normalize_inplace_global(image):
+    if FIXED_NORMALIZATION:
+        im_min, im_max = 0., 1.
+    else:
+        im_min, im_max = image.min(), image.max()
+    normalize_inplace(image, im_min=im_min, im_max=im_max)
 

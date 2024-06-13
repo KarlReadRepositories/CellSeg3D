@@ -4,7 +4,7 @@ import numpy as np
 from napari_cellseg3d.utils import remap_image
 from monai.inferers import sliding_window_inference
 from monai.transforms import AsDiscrete
-from napari_cellseg3d.func_variants import normalize_inplace
+from .func_variants import normalize_inplace
 
 
 DEVICE = 'cuda'

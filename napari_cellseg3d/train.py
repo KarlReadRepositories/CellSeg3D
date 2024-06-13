@@ -10,7 +10,6 @@ from napari_cellseg3d import config, utils
 from monai.transforms import LoadImaged, Compose
 from monai.data import DataLoader, Dataset
 import cv2
-from napari_cellseg3d.dev_scripts.colab_training import print_mem_usage
 import logging
 
 utils.LOGGER.setLevel(logging.DEBUG)
@@ -57,6 +56,7 @@ ncuts_radius = 2
 rec_loss = "MSE"
 n_cuts_weight = 0.5
 rec_loss_weight = 0.005
+FIXED_NORMALIZATION = True
 
 src_pth = training_source
 train_data_folder = Path(src_pth)

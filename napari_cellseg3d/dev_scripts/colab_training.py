@@ -40,6 +40,7 @@ from napari_cellseg3d.code_models.worker_training import TrainingWorkerBase
 from napari_cellseg3d.code_models.workers_utils import (
     PRETRAINED_WEIGHTS_DIR,
 )
+import napari_cellseg3d.func_variants as fv
 
 
 def print_mem_usage():
@@ -88,7 +89,7 @@ class WNetTrainingWorkerColab(TrainingWorkerBase):
         self.dice_metric = DiceMetric(
             include_background=False, reduction="mean", get_not_nans=False
         )
-        self.normalize_function = utils.remap_image
+        self.normalize_function = fv.normalize_inplace_global
         self.start_time = time.time()
         self.ncuts_losses = []
         self.rec_losses = []
