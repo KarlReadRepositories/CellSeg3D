@@ -11,6 +11,8 @@ from monai.transforms import LoadImaged, Compose
 from monai.data import DataLoader, Dataset
 import cv2
 import logging
+import monai
+print(monai.data.MetaTensor)
 
 utils.LOGGER.setLevel(logging.DEBUG)
 
