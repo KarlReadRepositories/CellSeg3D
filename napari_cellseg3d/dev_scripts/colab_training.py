@@ -471,9 +471,7 @@ class WNetTrainingWorkerColab(TrainingWorkerBase):
                     # Normalize the image
                     for i in range(image_batch.shape[0]):
                         for j in range(image_batch.shape[1]):
-                            image_batch[i, j] = self.normalize_function(
-                                image_batch[i, j]
-                            )
+                            self.normalize_function(image_batch[i, j])
 
                     # Forward pass
                     enc, dec = model(image_batch)
@@ -632,9 +630,7 @@ class WNetTrainingWorkerColab(TrainingWorkerBase):
                 # normalize val_inputs across channels
                 for i in range(val_inputs.shape[0]):
                     for j in range(val_inputs.shape[1]):
-                        val_inputs[i][j] = self.normalize_function(
-                            val_inputs[i][j]
-                        )
+                        self.normalize_function(image_batch[i, j])
                 print(f"Val inputs shape: {val_inputs.shape}")
                 val_outputs = sliding_window_inference(
                     val_inputs,
