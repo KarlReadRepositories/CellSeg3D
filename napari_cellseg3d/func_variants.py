@@ -25,4 +25,3 @@ def normalize_inplace_global(image):
     else:
         im_min, im_max = image.min(), image.max()
     normalize_inplace(image, im_min=im_min, im_max=im_max)
-

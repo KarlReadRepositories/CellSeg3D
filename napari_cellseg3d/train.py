@@ -53,9 +53,6 @@ validation_frequency = 2
 intensity_sigma = 1.0
 spatial_sigma = 4.0
 ncuts_radius = 2
-rec_loss = "MSE"
-n_cuts_weight = 0.5
-rec_loss_weight = 0.005
 
 src_pth = training_source
 train_data_folder = Path(src_pth)
@@ -83,7 +80,11 @@ WANDB_INSTALLED = False
 train_config = None
 wandb_config = None
 
-def init_configs(number_of_epochs = 50):
+def init_configs(args):
+    number_of_epochs = args['number_of_epochs']
+    n_cuts_weight = args['n_cuts_weight']
+    rec_loss_weight = args['rec_loss_weight']
+    rec_loss = args['rec_loss']
     global train_config, wandb_config
     train_config = WNetTrainingWorkerConfig(
         device="cuda:0",
