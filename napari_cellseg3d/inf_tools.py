@@ -22,7 +22,7 @@ def create_model(train_config, weights):
     return model
 
 
-def inference_on(model, image_files):
+def inference_on(model, image_files, roi_size):
     """
     :param model:
     :param image_files: one file or many files
@@ -43,7 +43,7 @@ def inference_on(model, image_files):
             print(f"Val inputs shape: {val_inputs.shape}")
             val_outputs = sliding_window_inference(
                 val_inputs,
-                roi_size=[64, 64, 64],
+                roi_size=roi_size,
                 sw_batch_size=1,
                 predictor=model.forward_encoder,
                 overlap=0.1,
